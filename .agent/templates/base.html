@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="backstage">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{DESCRIPTION}}">
+    <title>{{TITLE}}</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- GSAP + ScrollTrigger -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/design-tokens.css">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="tab-navigation" id="tabNav">
+        <div class="nav-container">
+            <div class="nav-logo">{{LOGO_TEXT}}</div>
+            <div class="nav-tabs" id="navTabs"></div>
+            <div class="nav-progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="presentation-container">
+
+        <!-- Hero Section -->
+        <section class="presentation-section hero-section" data-section="intro" id="section-intro">
+            <div class="section-content">
+                <div class="hero-content">
+                    <span class="hero-tag">
+                        <i data-lucide="{{TAG_ICON}}"></i>
+                        {{TAG}}
+                    </span>
+                    <h1 class="hero-title"><span>{{TITLE_HIGHLIGHT}}</span><br>{{TITLE_REST}}</h1>
+                    <p class="hero-subtitle">{{SUBTITLE}}</p>
+                    <div class="hero-meta">
+                        <span>{{DATE}}</span>
+                        <span class="meta-divider"></span>
+                        <span>{{AUTHOR}}</span>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <img src="{{HERO_IMAGE}}" alt="Hero" class="hero-image">
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <span>Scroll</span>
+                <div class="scroll-arrow"></div>
+            </div>
+        </section>
+
+        {{SECTIONS}}
+
+        <!-- Conclusion Section -->
+        <section class="presentation-section conclusion-section" data-section="conclusion" id="section-conclusion">
+            <div class="section-content">
+                <div class="conclusion-content">
+                    <h2 class="conclusion-title">{{CONCLUSION_TITLE}}</h2>
+                    <div class="key-takeaways">
+                        {{KEY_TAKEAWAYS}}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- References Section -->
+        <section class="presentation-section references-section" data-section="references" id="section-references">
+            <div class="section-content">
+                <h2 class="section-title">References</h2>
+                <ul class="references-list">
+                    {{REFERENCES}}
+                </ul>
+                <div class="footer-info">
+                    <p>Generated with Antigravity</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Scripts -->
+    <script src="scripts/main.js"></script>
+    <script src="scripts/scroll-animations.js"></script>
+    <script src="scripts/charts.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

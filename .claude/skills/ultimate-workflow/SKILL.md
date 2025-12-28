@@ -1,421 +1,337 @@
 ---
 name: ultimate-workflow
 description: |
-  Complete implementation workflow with parallel expert validation: Planning → TDD → Testing → Code Review → Completeness Check.
-  Iterates until 100-point completion score. Auto-discovers gaps and self-improves.
-  Use when user says "ultimate workflow", "100 points", "perfect implementation", "complete this perfectly",
-  or needs exhaustive multi-file implementation with full testing and validation.
+  실용적인 구현 워크플로우: Plan → Implement → Validate 사이클.
+  최대 3회 반복으로 80점 이상 품질 달성.
+  Use when: "ultimate workflow", "완벽하게 구현", "품질 높게", "제대로 구현"
 allowed-tools: Task, Bash, Read, Write, Edit, Grep, Glob, WebSearch, WebFetch, TodoWrite
 ---
 
-# Ultimate Workflow - Infinite Perfection Loop
+# Ultimate Workflow - Practical Implementation
 
-> **Philosophy**: 무한한 컴퓨팅 파워를 활용하여 가장 철저하고 정확한 결과를 도출한다.
-> 효율성보다 정확성. 수십 개의 서브에이전트가 수십 시간 동작해도 무방하다.
+> 실제 동작하는 품질 중심 개발 워크플로우
 
-## Overview
-
-이 스킬은 사용자의 요구사항을 받아 **완벽한 구현이 될 때까지 무한 루프**로 동작합니다.
+## Execution Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    ULTIMATE WORKFLOW LOOP                           │
-│                                                                     │
-│  ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐         │
-│  │ PHASE 1  │──▶│ PHASE 2  │──▶│ PHASE 3  │──▶│ PHASE 4  │         │
-│  │ Planning │   │   TDD    │   │ Testing  │   │ Review   │         │
-│  └──────────┘   └──────────┘   └──────────┘   └──────────┘         │
-│                                                      │              │
-│                                                      ▼              │
-│                                              ┌──────────────┐       │
-│                                              │   PHASE 5    │       │
-│                                              │ Completeness │       │
-│                                              │    Check     │       │
-│                                              └──────┬───────┘       │
-│                                                     │               │
-│                          ┌──────────────────────────┼───────────┐   │
-│                          │                          │           │   │
-│                          ▼                          ▼           │   │
-│                    Score < 100?              Score = 100?       │   │
-│                          │                          │           │   │
-│                          ▼                          ▼           │   │
-│                  ┌──────────────┐            ┌──────────┐       │   │
-│                  │   PHASE 6    │            │ COMPLETE │       │   │
-│                  │ Gap Analysis │            │  EXIT    │       │   │
-│                  │ + Auto-Fix   │            └──────────┘       │   │
-│                  └──────┬───────┘                               │   │
-│                         │                                       │   │
-│                         └───────────── LOOP BACK ───────────────┘   │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                 PRACTICAL WORKFLOW                       │
+│                                                         │
+│   PHASE 1        PHASE 2         PHASE 3               │
+│   ┌──────┐      ┌──────────┐    ┌──────────┐           │
+│   │ PLAN │ ───▶ │IMPLEMENT │───▶│ VALIDATE │           │
+│   └──────┘      └──────────┘    └────┬─────┘           │
+│                                      │                  │
+│                         ┌────────────┴────────────┐     │
+│                         ▼                         ▼     │
+│                   Score < 80?              Score >= 80? │
+│                         │                         │     │
+│                         ▼                         ▼     │
+│                   ┌──────────┐              ┌────────┐  │
+│                   │ ITERATE  │              │ DONE   │  │
+│                   │ (max 3x) │              └────────┘  │
+│                   └────┬─────┘                          │
+│                        │                                │
+│                        └────────▶ PHASE 1               │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Activation Trigger
+## PHASE 1: PLAN (기획)
 
-이 스킬은 다음 상황에서 자동 활성화됩니다:
+### 실행 단계
 
-- 사용자가 "ultimate workflow", "완벽하게 구현", "무한 루프", "100점까지" 언급 시
-- 복잡한 기능 구현 요청 시 (3개 이상의 컴포넌트/파일 수정 필요)
-- "자동으로", "알아서", "스스로 판단해서" 같은 자율성 키워드 사용 시
-- `/ultimate-workflow` 명시적 호출 시
-
----
-
-## Phase Details
-
-### PHASE 1: Planning (기획)
-
-**목표**: 요구사항의 완전한 이해와 구현 계획 수립
-
-**서브에이전트 병렬 실행**:
-1. `requirement-analyzer` - 요구사항 분석 및 분해
-2. `codebase-explorer` - 기존 코드베이스 구조 파악
-3. `document-analyzer` - 기존 기획문서/PRD 분석
-4. `web-researcher` - 최신 베스트 프랙티스 조사
-5. `architecture-designer` - 아키텍처 설계
-
-**산출물**:
-- 요구사항 체크리스트 (모든 기능 목록)
-- 기술 설계 문서
-- 작업 분해 목록 (Task Breakdown)
-- 의존성 맵
-
-상세: [PHASES.md#phase-1-planning](PHASES.md#phase-1-planning)
-
----
-
-### PHASE 2: TDD Development (TDD 개발)
-
-**목표**: 테스트 주도 개발로 안전하고 검증 가능한 코드 작성
-
-**순서**:
-1. **Red**: 실패하는 테스트 먼저 작성
-2. **Green**: 테스트 통과하는 최소 구현
-3. **Refactor**: 코드 품질 개선
-
-**서브에이전트 병렬 실행**:
-1. `test-writer` - 테스트 코드 작성
-2. `implementer` - 기능 구현 (Mock-First 준수)
-3. `refactorer` - 코드 리팩토링
-
-**규칙**:
-- 모든 새 기능은 테스트 먼저
-- Mock 데이터는 `mock-server/db.json`에만
-- 컴포넌트 내 하드코딩 mock 절대 금지
-
-상세: [PHASES.md#phase-2-tdd-development](PHASES.md#phase-2-tdd-development)
-
----
-
-### PHASE 3: Testing (테스트)
-
-**목표**: 모든 레벨에서 완전한 테스트 커버리지 확보
-
-**테스트 유형**:
-1. **Unit Tests** - 개별 함수/컴포넌트
-2. **Integration Tests** - API 연동
-3. **E2E Tests** - 사용자 시나리오
-
-**서브에이전트 병렬 실행**:
-1. `unit-test-runner` - 단위 테스트 실행
-2. `integration-test-runner` - 통합 테스트 실행
-3. `e2e-test-runner` - E2E 테스트 실행
-4. `coverage-analyzer` - 커버리지 분석
-
-**성공 기준**:
-- 모든 테스트 통과
-- 커버리지 80% 이상
-- 빌드 성공
-
-상세: [PHASES.md#phase-3-testing](PHASES.md#phase-3-testing)
-
----
-
-### PHASE 4: Code Review (코드 리뷰)
-
-**목표**: 다각도 품질 검증
-
-**서브에이전트 병렬 실행** (최소 5개):
-1. `security-reviewer` - 보안 취약점 분석
-2. `performance-reviewer` - 성능 분석
-3. `architecture-reviewer` - 아키텍처 일관성
-4. `style-reviewer` - 코드 스타일/규칙 준수
-5. `best-practice-reviewer` - 베스트 프랙티스 준수
-
-**검토 항목**:
-- OWASP Top 10 취약점
-- 성능 병목점
-- 코드 중복
-- 타입 안정성
-- 에러 처리
-
-상세: [PHASES.md#phase-4-code-review](PHASES.md#phase-4-code-review)
-
----
-
-### PHASE 5: Completeness Check (완성도 체크)
-
-**목표**: 100점 만점 기준으로 완성도 평가
-
-**평가 방법**:
-1. **웹서칭** - 최신 베스트 프랙티스와 비교
-2. **기획문서 분석** - 원본 요구사항 대비 구현 완료율
-3. **자동 점수 산정** - 100점 만점
-
-**서브에이전트 병렬 실행**:
-1. `web-validator` - 웹서칭으로 베스트 프랙티스 검증
-2. `document-validator` - 기획문서 대비 검증
-3. `feature-validator` - 기능 완성도 검증
-4. `quality-validator` - 품질 기준 검증
-5. `score-calculator` - 최종 점수 산정
-
-**점수 체계**: [SCORING.md](SCORING.md) 참조
-
-상세: [PHASES.md#phase-5-completeness-check](PHASES.md#phase-5-completeness-check)
-
----
-
-### PHASE 6: Gap Analysis & Auto-Fix (갭 분석 및 자동 수정)
-
-**목표**: 100점 미달 시 부족한 부분 자동 발견 및 수정
-
-**동작**:
-1. 점수 미달 항목 분석
-2. 부족한 기능 자동 식별
-3. 추가 구현 계획 수립
-4. **PHASE 1로 자동 루프백**
-
-**서브에이전트**:
-1. `gap-analyzer` - 부족점 분석
-2. `feature-discoverer` - 누락 기능 발견
-3. `priority-ranker` - 우선순위 결정
-4. `plan-updater` - 계획 업데이트
-
-**루프백 조건**:
-- Score < 100 → 무조건 루프백
-- 최대 루프 횟수 제한 없음 (무한)
-
-상세: [LOOP.md](LOOP.md)
-
----
-
-## Orchestration Model
-
+**Step 1.1: 요구사항 분석**
 ```
-                    ┌─────────────────────┐
-                    │   ORCHESTRATOR      │
-                    │  (Main Controller)  │
-                    └──────────┬──────────┘
-                               │
-         ┌─────────────────────┼─────────────────────┐
-         │                     │                     │
-         ▼                     ▼                     ▼
-┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
-│ PARALLEL POOL 1 │  │ PARALLEL POOL 2 │  │ PARALLEL POOL 3 │
-│   (Analyzers)   │  │ (Implementers)  │  │  (Validators)   │
-├─────────────────┤  ├─────────────────┤  ├─────────────────┤
-│ • requirement   │  │ • test-writer   │  │ • security      │
-│ • codebase      │  │ • implementer   │  │ • performance   │
-│ • document      │  │ • refactorer    │  │ • architecture  │
-│ • web-research  │  │ • mock-writer   │  │ • style         │
-│ • architecture  │  │                 │  │ • best-practice │
-└─────────────────┘  └─────────────────┘  └─────────────────┘
+사용자 요구사항을 분석하여 다음을 도출:
+1. 명시적 요구사항 목록 (ID 부여)
+2. 각 요구사항의 수용 기준 (AC)
+3. 예상 수정 파일 목록
 ```
 
-**원칙**:
-- 독립적인 작업은 **항상 병렬 실행**
-- 의존성 있는 작업만 순차 실행
-- 각 서브에이전트는 **단일 책임**
-- 오케스트레이터가 **전역 상태 관리**
+**Step 1.2: 코드베이스 탐색** (Task 사용)
+```yaml
+Task:
+  subagent_type: "Explore"
+  description: "Explore codebase for implementation"
+  prompt: |
+    요구사항 구현을 위해 코드베이스를 탐색하세요.
 
----
+    탐색 대상:
+    1. 관련 기존 컴포넌트/모듈
+    2. 사용 가능한 유틸리티/헬퍼
+    3. 기존 패턴 및 컨벤션
+    4. 수정이 필요한 파일 목록
 
-## State Management
-
-```javascript
-// 전역 상태 구조
-UltimateWorkflowState = {
-  iteration: 0,                    // 현재 루프 횟수
-  phase: "PLANNING",               // 현재 단계
-  score: 0,                        // 현재 점수 (0-100)
-
-  requirements: {
-    original: [],                  // 원본 요구사항
-    discovered: [],                // 발견된 추가 요구사항
-    completed: [],                 // 완료된 요구사항
-    pending: []                    // 미완료 요구사항
-  },
-
-  implementation: {
-    files_created: [],
-    files_modified: [],
-    tests_written: [],
-    tests_passed: [],
-    tests_failed: []
-  },
-
-  validation: {
-    security_issues: [],
-    performance_issues: [],
-    style_issues: [],
-    missing_features: []
-  },
-
-  scoring: {
-    requirement_coverage: 0,       // 요구사항 충족률 (25점)
-    test_coverage: 0,              // 테스트 커버리지 (25점)
-    code_quality: 0,               // 코드 품질 (25점)
-    best_practices: 0              // 베스트 프랙티스 (25점)
-  }
-}
+    CLAUDE.md의 프로젝트 규칙 참조 필수.
 ```
 
----
+**Step 1.3: 작업 계획 수립**
+```
+TodoWrite로 작업 목록 생성:
+- 각 기능별 구현 태스크
+- 테스트 작성 태스크
+- 검증 태스크
+```
 
-## Execution Protocol
-
-### Step 0: Session Check (세션 확인)
-
+### Phase 1 산출물
 ```markdown
-워크플로우 시작 전 이전 세션 확인:
+## 요구사항 체크리스트
+| ID | 요구사항 | AC | 상태 |
+|----|---------|----|----|
+| REQ-001 | ... | ... | ⬜ |
 
-1. `.claude/workflow-state/checkpoint.yaml` 존재 확인
-2. 존재 시:
-   → 이전 상태 로드
-   → "이전 작업(Iteration N, Score M점)을 계속하시겠습니까?" 질문
-   → 사용자 확인 시 중단 지점부터 재개
-3. 미존재 시:
-   → 새 워크플로우 시작
-   → `.claude/workflow-state/` 디렉토리 생성
+## 작업 계획
+| Task | 파일 | 우선순위 |
+|------|------|---------|
+| T-001 | ... | P1 |
 ```
 
-### Step 1: Initialization
+---
 
-```markdown
-1. 사용자 요구사항 수신
-2. CLAUDE.md 및 프로젝트 컨텍스트 로드
-3. 기존 기획문서 탐색 (docs/, *.md, PRD 등)
-4. 초기 상태 설정 (iteration=0, score=0)
-5. 상태 저장 디렉토리 초기화
-6. PHASE 1 시작
+## PHASE 2: IMPLEMENT (구현)
+
+### 실행 단계
+
+**Step 2.1: Mock 데이터 준비** (프로젝트 규칙)
+```
+새 API 데이터 필요 시:
+1. mock-server/db.json에 데이터 추가
+2. ID 컨벤션 준수 (Project: 1000-1999, Layer: 2000-2999 등)
+3. curl로 API 응답 확인
 ```
 
-### Step 2: Phase Execution
-
-```markdown
-각 Phase에서:
-1. 해당 Phase의 모든 서브에이전트 병렬 실행
-2. 결과 수집 및 통합
-3. 상태 업데이트
-4. 다음 Phase로 전이
+**Step 2.2: 테스트 먼저 작성** (TDD)
+```
+각 요구사항에 대해:
+1. 실패하는 테스트 작성
+2. 테스트 실행하여 실패 확인
 ```
 
-### Step 3: Loop Decision
+**Step 2.3: 기능 구현**
+```
+테스트를 통과하는 코드 작성:
+1. 기존 패턴/컨벤션 준수
+2. 타입 안정성 확보
+3. 에러 처리 포함
+```
 
+**Step 2.4: 테스트 통과 확인**
+```bash
+npm run test
+npm run build
+```
+
+### Phase 2 체크리스트
 ```markdown
-PHASE 5 완료 후:
-IF score == 100:
-    → 완료 리포트 출력
-    → EXIT
+□ Mock 데이터가 db.json에 추가됨
+□ 테스트가 작성됨
+□ 모든 테스트 통과
+□ 빌드 성공
+□ 타입 에러 없음
+```
+
+---
+
+## PHASE 3: VALIDATE (검증)
+
+### 실행 단계
+
+**Step 3.1: 병렬 검증** (3개 에이전트 동시 실행)
+
+```yaml
+# 동시에 3개 Task 호출
+
+Task 1 - Quality Check:
+  subagent_type: "general-purpose"
+  description: "Check code quality"
+  prompt: |
+    구현된 코드의 품질을 검증하세요.
+
+    검증 항목:
+    1. 보안: XSS, Injection 취약점
+    2. 성능: 불필요한 리렌더링, 메모리 누수
+    3. 타입: any 사용, 타입 에러
+
+    각 이슈에 대해 파일:라인, 심각도, 수정방법 보고.
+
+Task 2 - Test & Build:
+  subagent_type: "general-purpose"
+  description: "Run tests and build"
+  prompt: |
+    테스트와 빌드를 실행하세요.
+
+    실행:
+    1. npm run test
+    2. npm run build
+    3. npm run lint (있다면)
+
+    결과를 정확히 보고하세요.
+
+Task 3 - Requirement Check:
+  subagent_type: "general-purpose"
+  description: "Verify requirements"
+  prompt: |
+    요구사항 충족 여부를 검증하세요.
+
+    각 요구사항에 대해:
+    1. 구현 완료 여부
+    2. AC 충족 여부
+    3. 테스트 존재 여부
+
+    체크리스트 형식으로 보고.
+```
+
+**Step 3.2: 점수 산정**
+
+```
+점수 계산 (100점 만점):
+
+요구사항 (40점):
+  = (완료된 요구사항 / 전체) × 40
+
+테스트 (30점):
+  통과율 100% = 20점
+  빌드 성공 = 10점
+
+품질 (30점):
+  보안 이슈 없음 = 10점
+  성능 이슈 없음 = 10점
+  타입 에러 없음 = 10점
+```
+
+**Step 3.3: 판정**
+
+```
+IF score >= 80:
+  → 완료 (사용자에게 결과 보고)
+
+ELSE IF iteration < 3:
+  → 부족한 항목 식별
+  → iteration++
+  → PHASE 1로 (해당 항목만 개선)
+
 ELSE:
-    → PHASE 6 (Gap Analysis) 실행
-    → iteration++
-    → PHASE 1로 루프백
+  → 현재 상태로 완료
+  → 미해결 항목 보고
 ```
 
 ---
 
-## Integration Points
+## Scoring Table
 
-### MCP Tools 활용
+| 영역 | 항목 | 배점 |
+|------|------|------|
+| **요구사항** | 명시적 요구사항 완료 | 30점 |
+| | 암묵적 요구사항 완료 | 10점 |
+| **테스트** | 테스트 100% 통과 | 20점 |
+| | 빌드 성공 | 10점 |
+| **품질** | 보안 이슈 없음 | 10점 |
+| | 성능 이슈 없음 | 10점 |
+| | 타입 에러 없음 | 10점 |
+| **TOTAL** | | **100점** |
 
-| Tool | 용도 |
-|------|------|
-| `Task` | 서브에이전트 생성 및 병렬 실행 |
-| `WebSearch` | 베스트 프랙티스 조사 |
-| `WebFetch` | 외부 문서 분석 |
-| `Grep/Glob` | 코드베이스 탐색 |
-| `Read/Write/Edit` | 파일 조작 |
-| `Bash` | 빌드/테스트 실행 |
-| `LSP` | 코드 인텔리전스 |
-| `TodoWrite` | 작업 추적 |
-
-### Existing Skills 연동
-
-이 워크플로우는 다른 스킬들을 내부적으로 호출할 수 있습니다:
-
-- `sc:analyze` - 코드 분석
-- `sc:implement` - 구현
-- `sc:test` - 테스트 실행
-- `sc:research` - 웹 조사
-- `sc:document` - 문서화
+**목표: 80점 이상**
 
 ---
 
-## Success Criteria
+## Iteration Rules
 
-**완료 조건** (모두 충족 시 100점):
-
-1. **요구사항 충족** (25점)
-   - 모든 명시적 요구사항 구현 완료
-   - 발견된 암묵적 요구사항 구현 완료
-
-2. **테스트 커버리지** (25점)
-   - 단위 테스트 100% 통과
-   - 통합 테스트 100% 통과
-   - 빌드 성공
-
-3. **코드 품질** (25점)
-   - 보안 취약점 0개
-   - 성능 이슈 0개
-   - 타입 에러 0개
-
-4. **베스트 프랙티스** (25점)
-   - 프로젝트 규칙 100% 준수
-   - 업계 표준 준수
-   - 문서화 완료
-
----
-
-## Reference Documents
-
-- [PHASES.md](PHASES.md) - 각 단계 상세 가이드
-- [SCORING.md](SCORING.md) - 100점 채점 시스템
-- [AGENTS.md](AGENTS.md) - 서브에이전트 정의
-- [LOOP.md](LOOP.md) - 무한 루프 메커니즘
-- [VALIDATION.md](VALIDATION.md) - 웹서칭/문서 분석 통합
-- [RAPID-CYCLE.md](RAPID-CYCLE.md) - 빠른 사이클 + 병렬 전문가 실행
-- [ANTI-HALLUCINATION.md](ANTI-HALLUCINATION.md) - 할루시네이션 방지 프로토콜
-- [STATE.md](STATE.md) - 상태 저장 및 세션 연속성
-
----
-
-## Quick Start
-
-사용자가 요구사항을 제공하면:
-
+### 제한 사항
 ```
-User: "사용자 인증 기능을 구현해줘"
+최대 반복: 3회
+최대 병렬 에이전트: 3개
+목표 점수: 80점 이상
+```
 
-Ultimate Workflow 활성화:
-→ PHASE 1: 인증 관련 모든 요구사항 분석
-→ PHASE 2: TDD로 인증 기능 구현
-→ PHASE 3: 모든 테스트 실행
-→ PHASE 4: 보안/성능/아키텍처 리뷰
-→ PHASE 5: 완성도 체크 (예: 87점)
-→ PHASE 6: 부족점 분석 (MFA 누락, 세션 관리 미흡)
-→ LOOP BACK to PHASE 1
-→ ... (100점 달성까지 반복)
-→ 완료 리포트 출력
+### 반복 시 집중 영역
+```
+Iteration 1: 전체 구현 (기본)
+Iteration 2: 테스트/품질 보완
+Iteration 3: 미세 조정 (필요시)
+```
+
+### 조기 완료 조건
+```
+1. 모든 요구사항 완료 (40점)
+2. 테스트 통과 + 빌드 성공 (30점)
+3. Critical 이슈 없음
+
+→ 70점 이상이면 사용자에게 완료 여부 확인
 ```
 
 ---
 
-## Notes
+## Quick Reference
 
-- 이 워크플로우는 **무한한 컴퓨팅 파워**를 전제로 설계됨
-- 효율성보다 **정확성과 완전성**을 우선시함
-- 수십 개의 서브에이전트가 수십 시간 동작해도 무방함
-- 100점 달성 전까지 **절대 종료하지 않음**
+### Phase 1 (Plan)
+```
+1. 요구사항 분석 → 체크리스트 생성
+2. Task(Explore)로 코드베이스 탐색
+3. TodoWrite로 작업 계획 수립
+```
+
+### Phase 2 (Implement)
+```
+1. db.json에 Mock 데이터 추가 (필요시)
+2. 테스트 먼저 작성
+3. 구현
+4. npm run test && npm run build
+```
+
+### Phase 3 (Validate)
+```
+1. 3개 Task 병렬 실행 (Quality, Test, Requirement)
+2. 점수 산정
+3. 80점 이상? → 완료 / 미만? → 반복
+```
+
+---
+
+## Anti-Hallucination Rules
+
+### 금지
+```
+❌ "아마 완료된 것 같다" - 추측 금지
+❌ 테스트 실행 없이 "통과 예상" - 가정 금지
+❌ "이 정도면 충분하다" - 점수 없이 완료 금지
+```
+
+### 필수
+```
+✅ 모든 판단은 실제 도구 실행 결과 기반
+✅ 테스트 결과는 npm run test 실행 후 보고
+✅ 빌드 성공은 npm run build 실행 후 확인
+✅ 점수는 체크리스트 기반으로 명시적 계산
+```
+
+---
+
+## Example Execution
+
+```
+User: "사용자 프로필 편집 기능 구현해줘"
+
+[PHASE 1: PLAN]
+→ 요구사항 분석: 프로필 조회, 수정, 저장
+→ Task(Explore)로 기존 프로필 관련 코드 탐색
+→ TodoWrite로 3개 태스크 생성
+
+[PHASE 2: IMPLEMENT]
+→ db.json에 프로필 데이터 추가
+→ 프로필 편집 테스트 작성
+→ ProfileEdit.vue 컴포넌트 구현
+→ npm run test (통과), npm run build (성공)
+
+[PHASE 3: VALIDATE]
+→ 3개 에이전트 병렬 실행
+→ 점수: 요구사항 35/40 + 테스트 30/30 + 품질 25/30 = 90점
+→ 80점 이상 → 완료!
+
+[결과 보고]
+✅ 프로필 편집 기능 구현 완료
+- 구현 파일: ProfileEdit.vue, profileApi.ts
+- 테스트: 5개 통과
+- 점수: 90/100
+```

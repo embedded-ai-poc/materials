@@ -1,81 +1,69 @@
 # Claude Code Statusline
 
-Minimal, clean statusline for Claude Code CLI.
+Minimal, informative statusline for Claude Code CLI.
 
 ```
- jambiti:main │  Opus 4.5 │ ◐ 70K/200K ▓▓░░░ 35%  Σ115K │ $5.23 3m20s
+ jambiti:main* │  Opus 4.5 │ ◐ Ctx 70K/200K ▓▓░░░ 35% │ Σ Session 115K │  Cost 5.2¢ │  Time 3m0s │ 󰍛 RAM 50%
 ```
-
-## Features
-
-- **Git info**: repo:branch with dirty indicator (*)
-- **Model**: Current AI model
-- **Context**: Current/Max tokens + progress bar + percentage
-- **Session total**: Cumulative tokens (Σ)
-- **Cost & Time**: Session cost and duration
 
 ## Installation
 
-### Option 1: NPM (Recommended)
+### Windows (PowerShell) - One Line
 
-```bash
-npx @embedded-ai-poc/claude-statusline install
+```powershell
+iwr -useb https://raw.githubusercontent.com/embedded-ai-poc/materials/master/claude-statusline/install.ps1 | iex
 ```
 
-### Option 2: Windows Batch
+### Manual Installation
 
-```cmd
-git clone https://github.com/embedded-ai-poc/materials.git
-cd materials/claude-statusline
-install.bat
-```
-
-### Option 3: Manual
-
-1. Copy `statusline.js` to `~/.claude/statusline/index.js`
-2. Add to `~/.claude/settings.json`:
-
+1. Download `statusline.js` to `%USERPROFILE%\.claude\statusline\index.js`
+2. Add to `%USERPROFILE%\.claude\settings.json`:
 ```json
 {
   "statusLine": {
     "type": "command",
-    "command": "node ~/.claude/statusline/index.js"
+    "command": "node %USERPROFILE%\\.claude\\statusline\\index.js"
   }
 }
 ```
-
 3. Restart Claude Code
 
-## Uninstall
-
-```bash
-npx @embedded-ai-poc/claude-statusline uninstall
-```
-
-## Display Guide
+## Features
 
 | Section | Icon | Description |
 |---------|------|-------------|
-| Git |  | repo:branch (* if uncommitted changes) |
-| Model |  | Current AI model name |
-| Context | ◐ | Current tokens / Max tokens |
-| Progress | ▓░ | Visual context usage |
-| Percentage | % | Context window usage (color-coded) |
-| Session | Σ | Total tokens used in session |
-| Cost | $ | Session cost in USD |
-| Time |  | Session duration |
+| **Git** |  | `repo:branch` with dirty indicator (*) |
+| **Model** |  | Current AI model |
+| **Context** | ◐ | Current/Max tokens + progress bar + % |
+| **Session** | Σ | Total tokens used in session |
+| **Cost** |  | Session cost (USD) |
+| **Time** |  | Session duration |
+| **RAM** | 󰍛 | System memory usage |
 
 ## Color Coding
 
-- **Normal (dim)**: Context usage < 60%
-- **Yellow**: Context usage 60-80% (warning)
-- **Red**: Context usage > 80% (critical)
+| Color | Context (Ctx) | Memory (RAM) |
+|-------|---------------|--------------|
+| 🟢 Green | < 60% | < 70% |
+| 🟡 Yellow | 60-80% | 70-90% |
+| 🔴 Red | > 80% | > 90% |
 
 ## Requirements
 
+- Windows 10/11
 - Node.js 14+
 - Claude Code CLI
-- (Optional) Nerd Font for icons
+- (Recommended) [Nerd Font](https://www.nerdfonts.com/) for icons
+
+## Uninstall
+
+Delete the statusline config from `%USERPROFILE%\.claude\settings.json`:
+
+```json
+{
+  "statusLine": null
+}
+```
 
 ## License
 

@@ -192,14 +192,6 @@ process.stdin.on('end', () => {
       );
     }
 
-    // ─── 7. Memory ───
-    const mem = getMemoryUsage();
-    const memColor = statusColor(mem.pct, 70, 90);
-    parts.push(
-      `${c.dim}${icon.mem} RAM${c.reset} ` +
-      `${memColor}${mem.pct}%${c.reset}`
-    );
-
     console.log(parts.join(SEP));
   } catch {
     console.log(`${c.dim}—${c.reset}`);

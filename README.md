@@ -11,7 +11,7 @@ Claude Code CLI를 위한 상태표시줄
 ```
 git clone https://github.com/embedded-ai-poc/materials.git
 cd materials
-install.bat
+install.bat        (또는 .\install.ps1)
 ```
 
 설치 후 **Claude Code 재시작**

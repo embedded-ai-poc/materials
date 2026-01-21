@@ -1,11 +1,10 @@
 @echo off
 setlocal enabledelayedexpansion
-chcp 65001 >nul 2>&1
 
 echo.
-echo   ┌─────────────────────────────────────────┐
-echo   │   Claude Code Statusline Installer      │
-echo   └─────────────────────────────────────────┘
+echo   =========================================
+echo      Claude Code Statusline Installer
+echo   =========================================
 echo.
 
 set "CLAUDE_DIR=%USERPROFILE%\.claude"
@@ -32,9 +31,14 @@ echo   [OK] Directory ready
 
 :: Download statusline script
 echo   [..] Downloading statusline script...
-powershell -Command "Invoke-WebRequest -Uri '%SCRIPT_URL%' -OutFile '%STATUSLINE_DIR%\index.js' -UseBasicParsing" >nul 2>&1
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri '%SCRIPT_URL%' -OutFile '%STATUSLINE_DIR%\index.js'"
 if %errorlevel% neq 0 (
     echo   [X] Download failed. Check your internet connection.
+    pause
+    exit /b 1
+)
+if not exist "%STATUSLINE_DIR%\index.js" (
+    echo   [X] Download failed. File not found.
     pause
     exit /b 1
 )
@@ -45,9 +49,9 @@ node -e "const fs=require('fs'),p='%SETTINGS_FILE%'.replace(/\\/g,'/');let s={};
 echo   [OK] Updated settings.json
 
 echo.
-echo   ┌─────────────────────────────────────────┐
-echo   │   Installation Complete!                │
-echo   └─────────────────────────────────────────┘
+echo   =========================================
+echo      Installation Complete!
+echo   =========================================
 echo.
 echo   Restart Claude Code to see the new statusline.
 echo.

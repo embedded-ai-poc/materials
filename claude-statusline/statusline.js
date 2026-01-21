@@ -89,8 +89,7 @@ function fmt(n) {
 
 function fmtCost(usd) {
   if (!usd || usd <= 0) return null;
-  if (usd >= 1) return '$' + usd.toFixed(2);
-  return (usd * 100).toFixed(1) + '¢';
+  return '$' + usd.toFixed(2);
 }
 
 function fmtTime(ms) {

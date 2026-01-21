@@ -111,7 +111,7 @@ process.stdin.on('end', () => {
     // RAM
     const memPct = Math.round((1 - os.freemem() / os.totalmem()) * 100);
     const mc = statusColor(memPct, 70, 90);
-    parts.push(`${mc}${memPct}%${c.reset}`);
+    parts.push(`${c.dim}RAM ${c.reset}${mc}${memPct}%${c.reset}`);
 
     console.log(parts.join(SEP));
   } catch {

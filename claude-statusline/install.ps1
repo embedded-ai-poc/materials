@@ -20,9 +20,9 @@ $ScriptUrl = "https://raw.githubusercontent.com/embedded-ai-poc/materials/master
 # Banner
 # ─────────────────────────────────────────────────────────────
 Write-Host ""
-Write-Host "  ┌─────────────────────────────────────────┐" -ForegroundColor Cyan
-Write-Host "  │   Claude Code Statusline Installer      │" -ForegroundColor Cyan
-Write-Host "  └─────────────────────────────────────────┘" -ForegroundColor Cyan
+Write-Host "  =========================================" -ForegroundColor Cyan
+Write-Host "     Claude Code Statusline Installer      " -ForegroundColor Cyan
+Write-Host "  =========================================" -ForegroundColor Cyan
 Write-Host ""
 
 # ─────────────────────────────────────────────────────────────
@@ -91,9 +91,9 @@ Write-Host "  [✓] Updated settings.json" -ForegroundColor Green
 # Done
 # ─────────────────────────────────────────────────────────────
 Write-Host ""
-Write-Host "  ┌─────────────────────────────────────────┐" -ForegroundColor Green
-Write-Host "  │   Installation Complete!                │" -ForegroundColor Green
-Write-Host "  └─────────────────────────────────────────┘" -ForegroundColor Green
+Write-Host "  =========================================" -ForegroundColor Green
+Write-Host "     Installation Complete!                " -ForegroundColor Green
+Write-Host "  =========================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "  Restart Claude Code to see the new statusline." -ForegroundColor Yellow
 Write-Host ""

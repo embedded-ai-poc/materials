@@ -198,8 +198,6 @@ process.stdin.on('end', () => {
     const memColor = statusColor(mem.pct, 70, 90);
     parts.push(
       `${c.dim}${icon.mem} RAM${c.reset} ` +
-      `${memColor}${mem.usedGB}${c.reset}` +
-      `${c.dim}/${mem.totalGB}GB${c.reset} ` +
       `${memColor}${mem.pct}%${c.reset}`
     );
 

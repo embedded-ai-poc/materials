@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /**
- * Claude Code Statusline
- * Clean design with clear labels for each section
+ * Claude Code Statusline - Compact version
  */
 
 const fs = require('fs');
@@ -9,12 +8,8 @@ const path = require('path');
 const os = require('os');
 const { execSync } = require('child_process');
 
-// ─────────────────────────────────────────────────────────────
-// ANSI Colors
-// ─────────────────────────────────────────────────────────────
 const c = {
   reset: '\x1b[0m',
-  bold: '\x1b[1m',
   dim: '\x1b[2m',
   white: '\x1b[97m',
   gray: '\x1b[90m',
@@ -22,63 +17,28 @@ const c = {
   yellow: '\x1b[33m',
   red: '\x1b[31m',
   cyan: '\x1b[36m',
-  blue: '\x1b[34m',
 };
 
-// ─────────────────────────────────────────────────────────────
-// Icons (Nerd Font)
-// ─────────────────────────────────────────────────────────────
-const icon = {
-  git: '',
-  model: '',
-  ctx: '◐',
-  cost: '',
-  time: '',
-  mem: '󰍛',
-  sep: '│',
-};
-
-// ─────────────────────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────────────────────
 function getGitInfo(dir) {
   if (!dir) return null;
-
   let currentDir = dir;
   let gitDir = null;
-
   for (let i = 0; i < 10; i++) {
     const testGit = path.join(currentDir, '.git');
-    try {
-      if (fs.existsSync(testGit)) {
-        gitDir = testGit;
-        break;
-      }
-    } catch {}
+    try { if (fs.existsSync(testGit)) { gitDir = testGit; break; } } catch {}
     const parent = path.dirname(currentDir);
     if (parent === currentDir) break;
     currentDir = parent;
   }
-
   if (!gitDir) return null;
-
   try {
-    const headContent = fs.readFileSync(path.join(gitDir, 'HEAD'), 'utf8').trim();
-    const branch = headContent.startsWith('ref: refs/heads/')
-      ? headContent.replace('ref: refs/heads/', '')
-      : headContent.slice(0, 7);
+    const head = fs.readFileSync(path.join(gitDir, 'HEAD'), 'utf8').trim();
+    const branch = head.startsWith('ref: refs/heads/') ? head.replace('ref: refs/heads/', '') : head.slice(0, 7);
     const repo = path.basename(path.dirname(gitDir));
-
     let dirty = false;
-    try {
-      const opts = { encoding: 'utf8', timeout: 300, stdio: ['pipe', 'pipe', 'pipe'], cwd: dir };
-      dirty = execSync('git status --porcelain', opts).trim().length > 0;
-    } catch {}
-
+    try { dirty = execSync('git status --porcelain', { encoding: 'utf8', timeout: 300, stdio: ['pipe', 'pipe', 'pipe'], cwd: dir }).trim().length > 0; } catch {}
     return { repo, branch, dirty };
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }
 
 function fmt(n) {
@@ -87,27 +47,12 @@ function fmt(n) {
   return String(n);
 }
 
-function fmtCost(usd) {
-  if (!usd || usd <= 0) return null;
-  return '$' + usd.toFixed(2);
-}
-
 function fmtTime(ms) {
   if (!ms || ms <= 0) return null;
   const s = Math.floor(ms / 1000);
   if (s >= 3600) return Math.floor(s / 3600) + 'h' + Math.floor((s % 3600) / 60) + 'm';
-  if (s >= 60) return Math.floor(s / 60) + 'm' + (s % 60) + 's';
+  if (s >= 60) return Math.floor(s / 60) + 'm';
   return s + 's';
-}
-
-function getMemoryUsage() {
-  const total = os.totalmem();
-  const free = os.freemem();
-  const used = total - free;
-  const pct = Math.round((used / total) * 100);
-  const usedGB = (used / 1e9).toFixed(0);
-  const totalGB = (total / 1e9).toFixed(0);
-  return { pct, usedGB, totalGB };
 }
 
 function statusColor(pct, warn = 60, crit = 80) {
@@ -121,9 +66,6 @@ function bar(pct, w = 5) {
   return '▓'.repeat(f) + '░'.repeat(w - f);
 }
 
-// ─────────────────────────────────────────────────────────────
-// Main
-// ─────────────────────────────────────────────────────────────
 let input = '';
 process.stdin.setEncoding('utf8');
 process.stdin.on('data', d => input += d);
@@ -131,66 +73,45 @@ process.stdin.on('end', () => {
   try {
     const data = JSON.parse(input);
     const parts = [];
-    const SEP = ` ${c.gray}${icon.sep}${c.reset} `;
+    const SEP = ` ${c.gray}│${c.reset} `;
 
-    // ─── 1. Git: repo:branch ───
+    // Git
     const git = getGitInfo(data.workspace?.current_dir);
     if (git?.branch) {
       const dirty = git.dirty ? `${c.yellow}*${c.reset}` : '';
-      parts.push(
-        `${c.cyan}${icon.git}${c.reset} ` +
-        `${c.white}${git.repo}${c.reset}` +
-        `${c.dim}:${c.reset}` +
-        `${c.green}${git.branch}${c.reset}${dirty}`
-      );
+      parts.push(`${c.white}${git.repo}${c.dim}:${c.reset}${c.green}${git.branch}${c.reset}${dirty}`);
     }
 
-    // ─── 2. Model ───
+    // Model
     const model = data.model?.display_name;
-    if (model) {
-      parts.push(`${c.blue}${icon.model}${c.reset} ${c.white}${model}${c.reset}`);
-    }
+    if (model) parts.push(`${c.white}${model}${c.reset}`);
 
-    // ─── 3. Context Window ───
+    // Context
     const ctx = data.context_window || {};
     const pct = Math.round(ctx.used_percentage || 0);
     const maxCtx = ctx.context_window_size || 200000;
     const curCtx = Math.round(maxCtx * pct / 100);
-    const totalSession = (ctx.total_input_tokens || 0) + (ctx.total_output_tokens || 0);
-    const ctxColor = statusColor(pct, 60, 80);
+    const cc = statusColor(pct, 60, 80);
+    parts.push(`${cc}${fmt(curCtx)}${c.reset}${c.dim}/${fmt(maxCtx)}${c.reset} ${c.dim}${bar(pct)}${c.reset} ${cc}${pct}%${c.reset}`);
 
-    parts.push(
-      `${c.dim}${icon.ctx} Ctx${c.reset} ` +
-      `${ctxColor}${fmt(curCtx)}${c.reset}` +
-      `${c.dim}/${fmt(maxCtx)}${c.reset} ` +
-      `${c.dim}${bar(pct)}${c.reset} ` +
-      `${ctxColor}${pct}%${c.reset}`
-    );
+    // Session
+    const total = (ctx.total_input_tokens || 0) + (ctx.total_output_tokens || 0);
+    parts.push(`${c.dim}Σ${c.reset}${c.white}${fmt(total)}${c.reset}`);
 
-    // ─── 4. Session Total ───
-    parts.push(
-      `${c.dim}Σ Session${c.reset} ` +
-      `${c.white}${fmt(totalSession)}${c.reset}`
-    );
-
-    // ─── 5. Cost ───
+    // Cost
     const cost = data.cost || {};
-    const costStr = fmtCost(cost.total_cost_usd);
-    if (costStr) {
-      parts.push(
-        `${c.dim}${icon.cost} Cost${c.reset} ` +
-        `${c.yellow}${costStr}${c.reset}`
-      );
+    if (cost.total_cost_usd > 0) {
+      parts.push(`${c.yellow}$${cost.total_cost_usd.toFixed(2)}${c.reset}`);
     }
 
-    // ─── 6. Time ───
+    // Time
     const timeStr = fmtTime(cost.total_duration_ms);
-    if (timeStr) {
-      parts.push(
-        `${c.dim}${icon.time} Time${c.reset} ` +
-        `${c.white}${timeStr}${c.reset}`
-      );
-    }
+    if (timeStr) parts.push(`${c.white}${timeStr}${c.reset}`);
+
+    // RAM
+    const memPct = Math.round((1 - os.freemem() / os.totalmem()) * 100);
+    const mc = statusColor(memPct, 70, 90);
+    parts.push(`${mc}${memPct}%${c.reset}`);
 
     console.log(parts.join(SEP));
   } catch {

@@ -33,6 +33,9 @@ if %errorlevel% neq 0 (
 echo   [OK] Node.js found
 
 :: Create directories
+if not exist "%CLAUDE_DIR%" (
+    mkdir "%CLAUDE_DIR%"
+)
 if not exist "%STATUSLINE_DIR%" (
     mkdir "%STATUSLINE_DIR%"
 )
@@ -48,7 +51,7 @@ if %errorlevel% neq 0 (
 echo   [OK] Copied statusline script
 
 :: Update settings.json
-node -e "const fs=require('fs'),p='%SETTINGS_FILE%'.replace(/\\/g,'/');let s={};try{s=JSON.parse(fs.readFileSync(p,'utf8'))}catch{}s.statusLine={type:'command',command:'node %STATUSLINE_DIR%\\index.js'.replace(/\\/g,'\\\\')};fs.writeFileSync(p,JSON.stringify(s,null,2))"
+node -e "const fs=require('fs'),p=String.raw`%SETTINGS_FILE%`.replace(/\\/g,'/');let s={};try{let c=fs.readFileSync(p,'utf8');if(c.charCodeAt(0)===0xFEFF)c=c.slice(1);s=JSON.parse(c)}catch{}s.statusLine={type:'command',command:String.raw`node %STATUSLINE_DIR%\index.js`};fs.writeFileSync(p,JSON.stringify(s,null,2))"
 echo   [OK] Updated settings.json
 
 echo.
